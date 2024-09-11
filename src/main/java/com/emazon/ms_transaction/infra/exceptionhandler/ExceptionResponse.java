@@ -10,7 +10,9 @@ import java.util.Map;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExceptionResponse {
+
     public static final String INVALID_TOKEN = "Invalid token.";
+    public static final String FIELD_VALIDATION_ERRORS = "Request has field validation errors";
 
     private String message;
     private Map<String, Object> fieldErrors;

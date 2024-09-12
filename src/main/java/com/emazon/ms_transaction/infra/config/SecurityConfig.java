@@ -1,5 +1,6 @@
 package com.emazon.ms_transaction.infra.config;
 
+import com.emazon.ms_transaction.infra.security.entrypoint.CustomBasicAuthenticationEntryPoint;
 import com.emazon.ms_transaction.infra.security.entrypoint.CustomJWTEntryPoint;
 import com.emazon.ms_transaction.infra.security.filter.JwtValidatorFilter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,10 @@ public class SecurityConfig {
 
     private static final String AUX_DEPOT = "AUX_DEPOT";
     private static final String CLIENT = "CLIENT";
+
+    private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
+
+    // .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(customBasicAuthenticationEntryPoint))
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomJWTEntryPoint jwtEntryPoint) throws Exception {

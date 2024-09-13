@@ -1,5 +1,8 @@
 package com.emazon.ms_transaction.infra.exceptionhandler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,6 +15,8 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ControllerAdvisor {
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleFieldValidations(MethodArgumentNotValidException ex) {
@@ -31,5 +36,11 @@ public class ControllerAdvisor {
     public ResponseEntity<ExceptionResponse> handleBadRequestOnConstrains(HttpMessageNotReadableException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse.builder().message(ex.getMessage().split(":")[0]).build());
+    }
+
+    @ExceptionHandler(FeignException.BadRequest.class)
+    public ResponseEntity<ExceptionResponse> handleFeignBadRequest(FeignException.BadRequest ex) throws JsonProcessingException {
+        ExceptionResponse res = mapper.readValue(ex.contentUTF8(), ExceptionResponse.class);
+        return ResponseEntity.badRequest().body(res);
     }
 }

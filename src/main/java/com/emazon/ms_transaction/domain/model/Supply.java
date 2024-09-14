@@ -12,11 +12,10 @@ public class Supply {
     public Supply() {
     }
 
-    public Supply(Long id, Long userId, Set<SupplyArticle> supplyArticle, LocalDate transactionDate) {
+    public Supply(Long id, Long userId, Set<SupplyArticle> supplyArticle) {
         this.id = id;
         this.userId = userId;
         this.supplyArticle = supplyArticle;
-        this.transactionDate = transactionDate;
     }
 
     public Long getId() {

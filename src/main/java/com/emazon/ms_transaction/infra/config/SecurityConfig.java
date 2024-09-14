@@ -1,5 +1,7 @@
 package com.emazon.ms_transaction.infra.config;
 
+import com.emazon.ms_transaction.ConsUtils;
+import com.emazon.ms_transaction.infra.security.entrypoint.CustomBasicAuthenticationEntryPoint;
 import com.emazon.ms_transaction.infra.security.entrypoint.CustomJWTEntryPoint;
 import com.emazon.ms_transaction.infra.security.filter.JwtValidatorFilter;
 import lombok.RequiredArgsConstructor;
@@ -20,18 +22,17 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private static final String AUX_DEPOT = "AUX_DEPOT";
-    private static final String CLIENT = "CLIENT";
+    private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomJWTEntryPoint jwtEntryPoint) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
+            .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(customBasicAuthenticationEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
-                auth.requestMatchers(HttpMethod.POST, "/transactions/supply").hasRole(AUX_DEPOT);
-                auth.requestMatchers(HttpMethod.POST, "/transactions/sale").hasRole(CLIENT);
+                auth.requestMatchers(HttpMethod.POST, ConsUtils.builderPath().withSupply().build()).hasRole(ConsUtils.AUX_DEPOT_ROLE);
+                auth.requestMatchers(HttpMethod.POST, ConsUtils.builderPath().withSales().build()).hasRole(ConsUtils.CLIENT_ROLE);
 
                 auth.anyRequest().denyAll();
             });

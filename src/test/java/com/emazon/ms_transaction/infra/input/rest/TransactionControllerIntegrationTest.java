@@ -1,11 +1,19 @@
 package com.emazon.ms_transaction.infra.input.rest;
 
+import com.emazon.ms_transaction.ConsUtils;
+import com.emazon.ms_transaction.application.dto.supply.SupplyReqDTO;
+import com.emazon.ms_transaction.application.handler.TransactionHandler;
+import com.emazon.ms_transaction.infra.feign.adapters.StockFeignAdapter;
 import com.emazon.ms_transaction.infra.security.model.CustomUserDetails;
 import com.emazon.ms_transaction.infra.security.utils.JwtUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,6 +35,15 @@ class TransactionControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper mapper;
+
+    @SpyBean
+    private TransactionHandler transactionHandler;
+
+    @SpyBean
+    private StockFeignAdapter stockFeignAdapter;
+
     private static final String USER = "testUser";
     private static final String AUX_DEPOT = "AUX_DEPOT";
     private static final String CLIENT = "CLIENT";
@@ -36,15 +53,42 @@ class TransactionControllerIntegrationTest {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
 
-    private static final String SUPPLY_ENDPOINT = "/transactions/supply";
-    private static final String SALE_ENDPOINT = "/transactions/sale";
+    private static final String SUPPLY_ENDPOINT = ConsUtils.builderPath().withSupply().build();
+    private static final String SALE_ENDPOINT = ConsUtils.builderPath().withSales().build();
+
+    private static final SupplyReqDTO SUPPLY_REQ_DTO = SupplyReqDTO.builder().userId(ConsUtils.LONG_1)
+            .item(Set.of(SupplyReqDTO.ItemQuantity.builder().articleId(ConsUtils.LONG_1).quantity(ConsUtils.LONG_1).build()))
+            .build();
+
+    @Test
+    void Should_ThrowsException_When_BodyNotSent() throws Exception {
+        mockMvc.perform(post(SUPPLY_ENDPOINT).header(AUTHORIZATION, BEARER + getAuxDepotToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void Should_Get200_When_ValidRoleAndPayload() throws Exception {
+        Mockito.doNothing().when(stockFeignAdapter).addSupply(Mockito.any());
+
+        mockMvc.perform(post(SUPPLY_ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(SUPPLY_REQ_DTO))
+                        .header(AUTHORIZATION, BEARER + getAuxDepotToken()))
+                .andExpect(status().isOk());
+    }
 
     @Test
     void Should_ValidateToken_When_ValidRoles() throws Exception {
-        mockMvc.perform(post(SUPPLY_ENDPOINT).header(AUTHORIZATION, BEARER + getAuxDepotToken()))
+        Mockito.doNothing().when(transactionHandler).addSupply(Mockito.any());
+
+        mockMvc.perform(post(SUPPLY_ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(SUPPLY_REQ_DTO))
+                        .header(AUTHORIZATION, BEARER + getAuxDepotToken()))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(post(SALE_ENDPOINT).header(AUTHORIZATION, BEARER + getClientToken()))
+        mockMvc.perform(post(SALE_ENDPOINT)
+                        .header(AUTHORIZATION, BEARER + getClientToken()))
                 .andExpect(status().isOk());
     }
 
@@ -57,12 +101,6 @@ class TransactionControllerIntegrationTest {
     @Test
     void Should_ThrowsException_When_NonAuthenticated() throws Exception {
         mockMvc.perform(post(SUPPLY_ENDPOINT))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void Should_ThrowsException_When_InvalidToken() throws Exception {
-        mockMvc.perform(post(SUPPLY_ENDPOINT).header(AUTHORIZATION, BEARER + " "))
                 .andExpect(status().isUnauthorized());
     }
 

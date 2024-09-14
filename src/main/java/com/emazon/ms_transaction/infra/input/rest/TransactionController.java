@@ -23,7 +23,7 @@ public class TransactionController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/sale")
+    @PostMapping("/sales")
     public ResponseEntity<String> addSale() {
         return ResponseEntity.ok("Sell registered");
     }

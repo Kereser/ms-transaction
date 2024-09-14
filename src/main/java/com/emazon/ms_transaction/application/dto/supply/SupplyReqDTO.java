@@ -20,7 +20,7 @@ public class SupplyReqDTO {
 
     @NotNull
     @Valid
-    private Set<ItemQuantity> item;
+    private Set<@Valid ItemQuantity> item;
 
     @Builder
     @Getter

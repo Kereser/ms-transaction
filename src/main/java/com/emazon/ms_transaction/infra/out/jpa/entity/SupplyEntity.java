@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity(name = "supply")
@@ -31,7 +31,8 @@ public class SupplyEntity {
     private Set<SupplyArticleEntity> supplyArticleEntity;
 
     @Column(nullable = ConsUtils.FALSE)
-    private LocalDate transactionDate;
+    @Builder.Default
+    private LocalDateTime transactionDate = LocalDateTime.now();
 
     public void addReferenceToSupplyArticlesEntities(Set<SupplyArticleEntity> supplyArticles) {
         supplyArticles.forEach(sa -> sa.setSupply(this));

@@ -3,7 +3,7 @@ package com.emazon.ms_transaction.infra.input.rest;
 import com.emazon.ms_transaction.ConsUtils;
 import com.emazon.ms_transaction.application.dto.supply.SupplyReqDTO;
 import com.emazon.ms_transaction.application.handler.TransactionHandler;
-import com.emazon.ms_transaction.infra.feign.adapters.StockFeignAdapter;
+import com.emazon.ms_transaction.domain.spi.StockFeignPort;
 import com.emazon.ms_transaction.infra.security.model.CustomUserDetails;
 import com.emazon.ms_transaction.infra.security.utils.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +42,7 @@ class TransactionControllerIntegrationTest {
     private TransactionHandler transactionHandler;
 
     @SpyBean
-    private StockFeignAdapter stockFeignAdapter;
+    private StockFeignPort stockFeignPort;
 
     private static final String USER = "testUser";
     private static final String AUX_DEPOT = "AUX_DEPOT";
@@ -68,7 +68,7 @@ class TransactionControllerIntegrationTest {
 
     @Test
     void Should_Get200_When_ValidRoleAndPayload() throws Exception {
-        Mockito.doNothing().when(stockFeignAdapter).addSupply(Mockito.any());
+        Mockito.doNothing().when(stockFeignPort).addSupply(Mockito.any());
 
         mockMvc.perform(post(SUPPLY_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)

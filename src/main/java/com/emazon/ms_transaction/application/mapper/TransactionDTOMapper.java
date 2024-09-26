@@ -3,7 +3,6 @@ package com.emazon.ms_transaction.application.mapper;
 import com.emazon.ms_transaction.application.dto.supply.SupplyReqDTO;
 import com.emazon.ms_transaction.domain.model.Supply;
 import com.emazon.ms_transaction.domain.model.SupplyArticle;
-import com.emazon.ms_transaction.infra.out.jpa.entity.SupplyEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

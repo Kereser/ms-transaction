@@ -1,13 +1,13 @@
 package com.emazon.ms_transaction.domain.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class Supply {
     private Long id;
     private Long userId;
     private Set<SupplyArticle> supplyArticle;
-    private LocalDate transactionDate = LocalDate.now();
+    private LocalDateTime transactionDate = LocalDateTime.now();
 
     public Supply() {
     }
@@ -42,11 +42,11 @@ public class Supply {
         this.supplyArticle = supplyArticle;
     }
 
-    public LocalDate getTransactionDate() {
+    public LocalDateTime getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDate transactionDate) {
+    public void setTransactionDate(LocalDateTime transactionDate) {
         this.transactionDate = transactionDate;
     }
 }

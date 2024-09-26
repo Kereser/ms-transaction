@@ -23,11 +23,13 @@ public class ConsUtils {
     public static final Integer INTEGER_1 = 1;
     public static final Long LONG_1 = 1L;
 
+    public static final String BASIC_URL = "/transactions";
+
     /*** DB ***/
     public static final boolean FALSE = false;
 
     public static class PathBuilder {
-        private String finalPath = "/transactions";
+        private String finalPath = BASIC_URL;
 
         public PathBuilder withSupply() {
             this.finalPath += "/supply";

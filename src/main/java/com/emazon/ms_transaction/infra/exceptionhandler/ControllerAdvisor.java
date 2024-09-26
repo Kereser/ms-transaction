@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,5 +43,15 @@ public class ControllerAdvisor {
     public ResponseEntity<ExceptionResponse> handleFeignBadRequest(FeignException.BadRequest ex) throws JsonProcessingException {
         ExceptionResponse res = mapper.readValue(ex.contentUTF8(), ExceptionResponse.class);
         return ResponseEntity.badRequest().body(res);
+    }
+
+    @ExceptionHandler(FeignException.Forbidden.class)
+    public ResponseEntity<ExceptionResponse> handleFeignBadRequest(FeignException.Forbidden ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @ExceptionHandler(ConnectException.class)
+    public ResponseEntity<ExceptionResponse> handleFeignBadRequest(ConnectException ex) {
+        return ResponseEntity.internalServerError().body(ExceptionResponse.builder().message(ex.getMessage()).build());
     }
 }

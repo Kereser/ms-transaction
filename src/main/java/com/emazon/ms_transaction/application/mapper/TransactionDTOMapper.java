@@ -1,6 +1,8 @@
 package com.emazon.ms_transaction.application.mapper;
 
+import com.emazon.ms_transaction.application.dto.SaleReqDTO;
 import com.emazon.ms_transaction.application.dto.supply.SupplyReqDTO;
+import com.emazon.ms_transaction.domain.model.Sale;
 import com.emazon.ms_transaction.domain.model.Supply;
 import com.emazon.ms_transaction.domain.model.SupplyArticle;
 import org.mapstruct.Mapper;
@@ -22,4 +24,6 @@ public interface TransactionDTOMapper {
 
     @Mapping(source = "item", target = "supplyArticle")
     Supply toModel(SupplyReqDTO dto);
+
+    Sale saleReqDTOToSale(SaleReqDTO saleReqDTO);
 }

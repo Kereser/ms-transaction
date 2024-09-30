@@ -24,20 +24,23 @@ public class ConsUtils {
     public static final Long LONG_1 = 1L;
 
     public static final String BASIC_URL = "/transactions";
+    public static final String SUPPLY_URL = "/supply";
+    public static final String SALES_URL = "/sales";
 
     /*** DB ***/
     public static final boolean FALSE = false;
+    public static final boolean TRUE = true;
 
     public static class PathBuilder {
         private String finalPath = BASIC_URL;
 
         public PathBuilder withSupply() {
-            this.finalPath += "/supply";
+            this.finalPath += SUPPLY_URL;
             return this;
         }
 
         public PathBuilder withSales() {
-            this.finalPath += "/sales";
+            this.finalPath += SALES_URL;
             return this;
         }
 

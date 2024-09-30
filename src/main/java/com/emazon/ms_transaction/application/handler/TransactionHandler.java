@@ -1,5 +1,6 @@
 package com.emazon.ms_transaction.application.handler;
 
+import com.emazon.ms_transaction.application.dto.SaleReqDTO;
 import com.emazon.ms_transaction.application.dto.supply.SupplyReqDTO;
 import com.emazon.ms_transaction.application.mapper.TransactionDTOMapper;
 import com.emazon.ms_transaction.domain.api.ITransactionServicePort;
@@ -18,5 +19,10 @@ public class TransactionHandler implements ITransactionHandler {
     @Override
     public void addSupply(SupplyReqDTO dto) {
         transactionServicePort.addSupply(mapper.toModel(dto));
+    }
+
+    @Override
+    public void registerSale(SaleReqDTO saleReqDTO) {
+        transactionServicePort.registerSale(mapper.saleReqDTOToSale(saleReqDTO));
     }
 }

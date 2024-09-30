@@ -7,7 +7,8 @@ import com.emazon.ms_transaction.domain.usecases.TransactionUseCase;
 import com.emazon.ms_transaction.domain.spi.StockFeignPort;
 import com.emazon.ms_transaction.infra.out.jpa.adapter.TransactionJpaAdapter;
 import com.emazon.ms_transaction.infra.out.jpa.mapper.TransactionalEntityMapper;
-import com.emazon.ms_transaction.infra.out.jpa.repository.TransactionalJpaRepository;
+import com.emazon.ms_transaction.infra.out.jpa.repository.SaleJpaRepository;
+import com.emazon.ms_transaction.infra.out.jpa.repository.SupplyJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,13 +18,14 @@ import org.springframework.context.annotation.Configuration;
 public class BeanConfig {
 
     private final StockFeignPort stockFeignPort;
-    private final TransactionalJpaRepository transactionalJpaRepository;
+    private final SupplyJpaRepository supplyJpaRepository;
+    private final SaleJpaRepository saleJpaRepository;
     private final TransactionDTOMapper transactionDTOMapper;
     private final TransactionalEntityMapper transactionalEntityMapper;
 
     @Bean
     public ITransactionPersistencePort transactionPersistencePort() {
-        return new TransactionJpaAdapter(transactionalJpaRepository, transactionalEntityMapper);
+        return new TransactionJpaAdapter(supplyJpaRepository, saleJpaRepository, transactionalEntityMapper);
     }
 
     @Bean

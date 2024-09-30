@@ -1,6 +1,7 @@
 package com.emazon.ms_transaction.infra.input.rest;
 
 import com.emazon.ms_transaction.ConsUtils;
+import com.emazon.ms_transaction.TestCreationUtils;
 import com.emazon.ms_transaction.application.dto.supply.SupplyReqDTO;
 import com.emazon.ms_transaction.application.handler.TransactionHandler;
 import com.emazon.ms_transaction.domain.spi.StockFeignPort;
@@ -88,19 +89,28 @@ class TransactionControllerIntegrationTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(post(SALE_ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(TestCreationUtils.createSaleReqDTO()))
                         .header(AUTHORIZATION, BEARER + getClientToken()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void Should_ThrowsException_When_NonValidRoles() throws Exception {
+    void Should_ThrowsException_When_NotValidRoles() throws Exception {
         mockMvc.perform(post(SUPPLY_ENDPOINT).header(AUTHORIZATION, BEARER + getClientToken()))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(post(SALE_ENDPOINT)
+                        .header(AUTHORIZATION, BEARER + getAuxDepotToken()))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    void Should_ThrowsException_When_NonAuthenticated() throws Exception {
+    void Should_ThrowsException_When_NotAuthenticated() throws Exception {
         mockMvc.perform(post(SUPPLY_ENDPOINT))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(post(ConsUtils.builderPath().withSales().build()))
                 .andExpect(status().isUnauthorized());
     }
 

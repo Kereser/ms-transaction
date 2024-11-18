@@ -32,12 +32,10 @@ class TransactionControllerUnitTest {
     @MockBean
     private TransactionHandler transactionHandler;
 
-    private static final String AUX_DEPOT = "AUX_DEPOT";
-    private static final String CLIENT = "CLIENT";
     private static final String SUPPLY_URL = ConsUtils.builderPath().withSupply().build();
 
     @Test
-    @WithMockUser(roles = AUX_DEPOT)
+    @WithMockUser(roles = ConsUtils.AUX_DEPOT)
     void Should_ThrowsException_When_InvalidPayload() throws Exception {
         mockMvc.perform(post(SUPPLY_URL).contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(SupplyReqDTO.builder().build())))
@@ -48,7 +46,7 @@ class TransactionControllerUnitTest {
     }
 
     @Test
-    @WithMockUser(roles = CLIENT)
+    @WithMockUser(roles = ConsUtils.CLIENT)
     void Should_ThrowsException_When_InvalidRole() throws Exception {
         mockMvc.perform(post(SUPPLY_URL).contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(SupplyReqDTO.builder().build())))

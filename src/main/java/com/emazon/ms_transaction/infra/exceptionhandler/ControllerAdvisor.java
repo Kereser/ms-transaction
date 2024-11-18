@@ -1,5 +1,6 @@
 package com.emazon.ms_transaction.infra.exceptionhandler;
 
+import com.emazon.ms_transaction.ConsUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
@@ -36,7 +37,7 @@ public class ControllerAdvisor {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleBadRequestOnConstrains(HttpMessageNotReadableException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.builder().message(ex.getMessage().split(":")[0]).build());
+                .body(ExceptionResponse.builder().message(ex.getMessage().split(ConsUtils.COLON_DELIMITER)[0]).build());
     }
 
     @ExceptionHandler(FeignException.BadRequest.class)

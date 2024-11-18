@@ -45,15 +45,6 @@ class TransactionControllerIntegrationTest {
     @SpyBean
     private StockFeignPort stockFeignPort;
 
-    private static final String USER = "testUser";
-    private static final String AUX_DEPOT = "AUX_DEPOT";
-    private static final String CLIENT = "CLIENT";
-    private static final Long USER_ID = 1L;
-    private static final String PASSWORD = "password";
-
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
-
     private static final String SUPPLY_ENDPOINT = ConsUtils.builderPath().withSupply().build();
     private static final String SALE_ENDPOINT = ConsUtils.builderPath().withSales().build();
 
@@ -63,7 +54,7 @@ class TransactionControllerIntegrationTest {
 
     @Test
     void Should_ThrowsException_When_BodyNotSent() throws Exception {
-        mockMvc.perform(post(SUPPLY_ENDPOINT).header(AUTHORIZATION, BEARER + getAuxDepotToken()))
+        mockMvc.perform(post(SUPPLY_ENDPOINT).header(ConsUtils.AUTHORIZATION_HEADER, ConsUtils.BEARER + getAuxDepotToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -74,7 +65,7 @@ class TransactionControllerIntegrationTest {
         mockMvc.perform(post(SUPPLY_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(SUPPLY_REQ_DTO))
-                        .header(AUTHORIZATION, BEARER + getAuxDepotToken()))
+                        .header(ConsUtils.AUTHORIZATION_HEADER, ConsUtils.BEARER + getAuxDepotToken()))
                 .andExpect(status().isOk());
     }
 
@@ -85,23 +76,23 @@ class TransactionControllerIntegrationTest {
         mockMvc.perform(post(SUPPLY_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(SUPPLY_REQ_DTO))
-                        .header(AUTHORIZATION, BEARER + getAuxDepotToken()))
+                        .header(ConsUtils.AUTHORIZATION_HEADER, ConsUtils.BEARER + getAuxDepotToken()))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post(SALE_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(TestCreationUtils.createSaleReqDTO()))
-                        .header(AUTHORIZATION, BEARER + getClientToken()))
+                        .header(ConsUtils.AUTHORIZATION_HEADER, ConsUtils.BEARER + getClientToken()))
                 .andExpect(status().isOk());
     }
 
     @Test
     void Should_ThrowsException_When_NotValidRoles() throws Exception {
-        mockMvc.perform(post(SUPPLY_ENDPOINT).header(AUTHORIZATION, BEARER + getClientToken()))
+        mockMvc.perform(post(SUPPLY_ENDPOINT).header(ConsUtils.AUTHORIZATION_HEADER, ConsUtils.BEARER + getClientToken()))
                 .andExpect(status().isForbidden());
 
         mockMvc.perform(post(SALE_ENDPOINT)
-                        .header(AUTHORIZATION, BEARER + getAuxDepotToken()))
+                        .header(ConsUtils.AUTHORIZATION_HEADER, ConsUtils.BEARER + getAuxDepotToken()))
                 .andExpect(status().isForbidden());
     }
 
@@ -115,12 +106,12 @@ class TransactionControllerIntegrationTest {
     }
 
     private String getAuxDepotToken() {
-        CustomUserDetails userDetail = new CustomUserDetails(USER, PASSWORD, Set.of(new SimpleGrantedAuthority("ROLE_".concat(AUX_DEPOT))), USER_ID);
+        CustomUserDetails userDetail = new CustomUserDetails(ConsUtils.USER, ConsUtils.PASSWORD, Set.of(new SimpleGrantedAuthority(ConsUtils.ROLE.concat(ConsUtils.AUX_DEPOT))), ConsUtils.USER_ID_1);
         return JwtUtils.createToken(new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities()));
     }
 
     private String getClientToken() {
-        CustomUserDetails userDetail = new CustomUserDetails(USER, PASSWORD, Set.of(new SimpleGrantedAuthority("ROLE_".concat(CLIENT))), USER_ID);
+        CustomUserDetails userDetail = new CustomUserDetails(ConsUtils.USER, ConsUtils.PASSWORD, Set.of(new SimpleGrantedAuthority(ConsUtils.ROLE.concat(ConsUtils.CLIENT))), ConsUtils.USER_ID_1);
         return JwtUtils.createToken(new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities()));
     }
 }

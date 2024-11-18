@@ -16,12 +16,17 @@ public class ConsUtils {
     public static final Long PLUS_30_MINUTES = 1800000L;
 
     public static final String COMMA_DELIMITER = ",";
+    public static final String COLON_DELIMITER = ":";
 
-    public static final String AUX_DEPOT_ROLE = "AUX_DEPOT";
-    public static final String CLIENT_ROLE = "CLIENT";
+    public static final String USER = "testUser";
+    public static final String AUX_DEPOT = "AUX_DEPOT";
+    public static final String CLIENT = "CLIENT";
+    public static final Long USER_ID_1 = 1L;
+    public static final String PASSWORD = "password";
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER = "Bearer ";
+    public static final String ROLE = "ROLE_";
 
     public static final String FIELD_ITEM = "$.fieldErrors.item";
     public static final String FIELD_MESSAGE = "$.message";
@@ -36,6 +41,18 @@ public class ConsUtils {
     public static final String SALES_URL = "/sales";
 
     public static final String ARTICLES_SUPPLY_URL = "/articles/supply";
+    public static final String SWAGGER_URL = "/swagger-ui/**";
+    public static final String SWAGGER_DOCS_URL = "/v3/api-docs/**";
+
+    /*** Methods ***/
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+    public static final String PUT = "PUT";
+    public static final String DELETE = "DELETE";
+    public static final String REQUESTED_WITH = "X-Requested-With";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String FRONT_URL = "http://localhost:4200";
+    public static final String MATCH_ALL_URL = "/**";
 
     /*** DB ***/
     public static final boolean FALSE = false;
